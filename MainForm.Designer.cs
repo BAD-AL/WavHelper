@@ -33,12 +33,15 @@
             this.list_files = new System.Windows.Forms.ListBox();
             this.menu_list = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menu_deinterlace = new System.Windows.Forms.ToolStripMenuItem();
+            this.ps2DeInterlace = new System.Windows.Forms.ToolStripMenuItem();
+            this.deinterlaceAllPS2 = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_findSimilar = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_copyFileName = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_openContainingFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_convertToMP3 = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_convertToWav = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_showWavInfo = new System.Windows.Forms.ToolStripMenuItem();
+            this.showQuickWavInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_usageInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.txt_path = new System.Windows.Forms.TextBox();
             this.lab_path = new System.Windows.Forms.Label();
@@ -82,22 +85,40 @@
             // 
             this.menu_list.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menu_deinterlace,
+            this.ps2DeInterlace,
+            this.deinterlaceAllPS2,
             this.menu_findSimilar,
             this.menu_copyFileName,
             this.menu_openContainingFolder,
             this.menu_convertToMP3,
             this.menu_convertToWav,
             this.menu_showWavInfo,
+            this.showQuickWavInfoToolStripMenuItem,
             this.menu_usageInfo});
             this.menu_list.Name = "menu_list";
-            this.menu_list.Size = new System.Drawing.Size(229, 202);
+            this.menu_list.Size = new System.Drawing.Size(229, 268);
             // 
             // menu_deinterlace
             // 
             this.menu_deinterlace.Name = "menu_deinterlace";
             this.menu_deinterlace.Size = new System.Drawing.Size(228, 22);
-            this.menu_deinterlace.Text = "de-interlace";
+            this.menu_deinterlace.Text = "de-interlace (pc, xbox)";
             this.menu_deinterlace.Click += new System.EventHandler(this.menu_deinterlace_Click);
+            // 
+            // ps2DeInterlace
+            // 
+            this.ps2DeInterlace.Name = "ps2DeInterlace";
+            this.ps2DeInterlace.Size = new System.Drawing.Size(228, 22);
+            this.ps2DeInterlace.Text = "de-interlace (ps2)";
+            this.ps2DeInterlace.Click += new System.EventHandler(this.loadWavToolStripMenuItem_Click);
+            // 
+            // deinterlaceAllPS2
+            // 
+            this.deinterlaceAllPS2.Name = "deinterlaceAllPS2";
+            this.deinterlaceAllPS2.Size = new System.Drawing.Size(228, 22);
+            this.deinterlaceAllPS2.Text = "Deinterlace all shown (PS2)";
+            this.deinterlaceAllPS2.Visible = false;
+            this.deinterlaceAllPS2.Click += new System.EventHandler(this.deinterlaceAllPs2_Click);
             // 
             // menu_findSimilar
             // 
@@ -141,6 +162,13 @@
             this.menu_showWavInfo.Text = "Show basic sound data";
             this.menu_showWavInfo.Click += new System.EventHandler(this.menu_showWavInfo_Click);
             // 
+            // showQuickWavInfoToolStripMenuItem
+            // 
+            this.showQuickWavInfoToolStripMenuItem.Name = "showQuickWavInfoToolStripMenuItem";
+            this.showQuickWavInfoToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.showQuickWavInfoToolStripMenuItem.Text = "Show quick wav info";
+            this.showQuickWavInfoToolStripMenuItem.Click += new System.EventHandler(this.showQuickWavInfoToolStripMenuItem_Click);
+            // 
             // menu_usageInfo
             // 
             this.menu_usageInfo.Name = "menu_usageInfo";
@@ -180,6 +208,7 @@
             // 
             this.txt_filter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_filter.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_filter.Location = new System.Drawing.Point(72, 30);
             this.txt_filter.Name = "txt_filter";
             this.txt_filter.Size = new System.Drawing.Size(237, 20);
@@ -421,6 +450,9 @@
         private System.Windows.Forms.CheckBox check_onlyWMP;
         private System.Windows.Forms.ToolStripMenuItem menu_showWavInfo;
         private System.Windows.Forms.ToolStripMenuItem menu_usageInfo;
+        private System.Windows.Forms.ToolStripMenuItem ps2DeInterlace;
+        private System.Windows.Forms.ToolStripMenuItem showQuickWavInfoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deinterlaceAllPS2;
     }
 }
 

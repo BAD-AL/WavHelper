@@ -44,7 +44,10 @@ namespace WavHelper
         {
             Regex reg = new Regex("(?i)"+txt_filter.Text +"(?-i)");
             list_files.Items.Clear();
-            DirectoryInfo dInfo = new DirectoryInfo(txt_path.Text);
+            string path = ".\\";
+            if (txt_path.Text != "")
+                path = txt_path.Text;
+            DirectoryInfo dInfo = new DirectoryInfo(path);
             if (dInfo.Exists)
             {
                 FileInfo[] files = dInfo.GetFiles("*.wav", SearchOption.AllDirectories);
@@ -265,6 +268,24 @@ namespace WavHelper
                     MessageBox.Show(result, "Looks Good :)");
                 }
             }
+            /* the built-in xbox/pc de-interlacer is not quite right.
+            FileInfoListItem item = list_files.SelectedItem as FileInfoListItem;
+            if (item != null)
+            {
+                string frontFileName = item.FileInfo.Name.Replace(".wav", "_fnt.wav");
+                string backFileName = item.FileInfo.Name.Replace(".wav", "_bck.wav");
+                //NumSamples (calculated): 34560
+                int sample_count = 33280;
+                                //66560;
+                for(int i = 1; i < 5; i++)
+                {
+                    sample_count *= i ;
+                    Program.deinterlaceXboxPcAudio(item.FileInfo.FullName,
+                        item.FileInfo.DirectoryName + "\\" + sample_count + "_" + frontFileName,
+                        item.FileInfo.DirectoryName + "\\" + sample_count + "_" + backFileName,
+                        sample_count);
+                }
+            }*/
         }
 
         private void menu_findSimilar_Click(object sender, EventArgs e)
@@ -363,7 +384,6 @@ namespace WavHelper
 
         private void menu_convertToWav_Click(object sender, EventArgs e)
         {
-
             string programName = "ffmpeg.exe";
             if (!File.Exists(programName))
             {
@@ -396,7 +416,8 @@ namespace WavHelper
                     }
                 }*/
                 string arg = String.Format(" -y -i {0} {1}", item.FileInfo.FullName, output);
-                Program.RunCommand(programName, arg);
+                //Program.RunCommand(programName, arg);
+                Program.RunCommandAndGetOutput(programName, arg, true, "error ");
                 lab_status.Text = "Saved to: " + output;
             }
         }
@@ -430,6 +451,66 @@ namespace WavHelper
             {
                 string usageInfo = GetUsageInfo(info, false);
                 MessageForm.ShowMessage(info.FileInfo.Name, usageInfo);
+            }
+        }
+
+        private void loadWavToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!Directory.Exists(txt_CopyToFolder.Text))
+            {
+                MessageBox.Show("Please specify a valid output folder (Copy to selected folder)");
+                return;
+            }
+            FileInfoListItem info = list_files.SelectedItem as FileInfoListItem;
+            int interlace_sample_count = 57344;
+            //interlace_sample_count = 57300;
+            //while (interlace_sample_count < 58000)
+            //{
+                string filename = Program.deinterlaceFromPS2Stereo(
+                    info.FileInfo.FullName,
+                    //info.FileInfo.Directory + "\\" +interlace_sample_count+ "_stereo-" + "-" + info.FileInfo.Name,
+                    info.FileInfo.Directory + "\\" + "_stereo-" + "-" + info.FileInfo.Name,
+                    interlace_sample_count
+                    );
+                lab_status.Text = "Saved to: " + filename;
+            //    interlace_sample_count += 4;
+            //}
+        }
+
+        private void showQuickWavInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FileInfoListItem list_info = list_files.SelectedItem as FileInfoListItem;
+            byte[] data = File.ReadAllBytes(list_info.FileInfo.FullName);
+            try
+            {
+                WavInfo info = new WavInfo(data);
+                //MessageForm.ShowMessage(list_info.FileInfo.Name, info.ToString());
+                MessageForm mf = new MessageForm(SystemIcons.Information);
+                mf.MessageEditable = false;
+                mf.Text = list_info.FileInfo.Name;
+                mf.MessageText = info.ToString();
+                mf.ShowCancelButton = false;
+                mf.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void deinterlaceAllPs2_Click(object sender, EventArgs e)
+        {
+            if (!Directory.Exists(txt_CopyToFolder.Text))
+            {
+                MessageBox.Show("Please Specify a valid output folder");
+                return;
+            }
+            foreach (FileInfoListItem item in list_files.Items)
+            {
+                Program.deinterlaceFromPS2Stereo(
+                    item.FileInfo.FullName,
+                    txt_CopyToFolder.Text + "\\" + item.FileInfo.Name
+                    );
             }
         }
     }
